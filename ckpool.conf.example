@@ -1,0 +1,39 @@
+{
+"btcd" :  [
+	{
+		"url" : "xx.xx.xx.xx:8332",
+		"auth" : "username",
+		"pass" : "password",
+		"notify" : true
+	},
+	{
+		"url" : "xx.xx.xx.xx:8332",
+		"auth" : "username",
+		"pass" : "password",
+		"notify" : false
+	}
+],
+"upstream" : "xx.xx.xx.xx:3336",
+"btcaddress" : "",
+"btcsig" : "/mined by you/",
+"blockpoll" : 100,
+"donation" : 0.0,
+"nonce1length" : 4,
+"nonce2length" : 8,
+"update_interval" : 30,
+"version_mask" : "1fffe000",
+"serverurl" : [
+	"0.0.0.0:3333"
+],
+"nodeserver" : [
+	"0.0.0.0:3335"
+],
+"trusted" : [
+	"0.0.0.0:3336"
+],
+"mindiff" : 1,
+"startdiff" : 42,
+"maxdiff" : 0,
+"zmqblock" : "tcp://xx.xx.xx.xx:28332",
+"logdir" : "logs"
+}
