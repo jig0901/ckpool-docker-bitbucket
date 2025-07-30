@@ -80,11 +80,11 @@ Password: x
 Your Bitcoin Core node **must be running in full mode** and be:
 
 - **Fully synced**
-- **RPC accessible** at `10.229.65.150` or your configured IP
+- **RPC accessible** at `localhost` or your configured IP
 - Proper `bitcoin.conf` setup with:
   ```ini
   server=1
-  rpcuser=InventorX
+  rpcuser=<your-user>
   rpcpassword=<your-password>
   rpcallowip=172.17.0.0/16
   ```
