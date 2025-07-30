@@ -4,6 +4,37 @@ This repository provides a fully Dockerized setup of [CKPool](https://bitbucket.
 
 ---
 
+## 🛠️ Enhancements in This Fork
+
+This repository is a fork of the original [CKPool repo](https://bitbucket.org/ckolivas/ckpool/) with **additional enhancements**:
+
+### ✅ Added Worker Detail Logging
+
+In `stratifier.c`, the following block was introduced to emit **per-worker stats to the console/logs**:
+
+```c
+/* — emit per‑worker stats to console — */
+{
+    char *ws, *wsp;
+
+    ws = json_dumps(wval,
+                    JSON_NO_UTF8
+                  | JSON_PRESERVE_ORDER
+                  | JSON_COMPACT);
+
+    ASPRINTF(&wsp, "Worker %s:%s",
+             worker->workername, ws);
+
+    dealloc(ws);
+
+    add_msg_entry(&char_list, &wsp);
+}
+```
+
+This allows the log to output the detailed hashrate, shares, and identity of each connected worker—perfect for solo miners tracking performance.
+
+---
+
 ## 📦 Features
 
 - Minimal, fast deployment using Docker
@@ -99,3 +130,7 @@ Your Bitcoin Core node **must be running in full mode** and be:
 ## 📜 License
 
 This project follows the license of the upstream CKPool repo. Please review the Bitbucket source for applicable terms.
+
+
+
+
