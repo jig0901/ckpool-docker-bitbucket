@@ -81,7 +81,7 @@ Logs and RPC creds are passed via environment or `config.yaml`.
 ```yaml
 log_path: /ckpool/logs/ckpool.log
 btc_address: "bc1q..."
-rpc_user: "InventorX"
+rpc_user: "******"
 rpc_password: "********"
 rpc_host: "10.0.0.2"
 rpc_port: 8332
