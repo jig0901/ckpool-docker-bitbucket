@@ -1,0 +1,11 @@
+# path to your ckpool.log volume
+log_path: /data/logs/ckpool.log
+
+# the address you pass into get_user_stats()
+btc_address: bc1qmn4f9hu9rxhy9vusgeghjdwe24cvus7eecl7aq
+
+# your Bitcoin Core RPC settings
+rpc_user: *******
+rpc_password: ********
+rpc_host: **.**.**.**   # or host.docker.internal, or the service name
+rpc_port: 8332

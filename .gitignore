@@ -1,2 +1,6 @@
 ckpool.conf
 ckpool.cfg
+nginx/ssl/belanifamily_com.crt
+nginx/ssl/www_belanifamily_com.key
+metrics_api/config.yaml
+nginx/nginx.conf

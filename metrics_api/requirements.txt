@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+watchdog
+PyYAML
+python-bitcoinrpc
+httpx>=0.24.0
+pytz

@@ -1,0 +1,77 @@
+version: "3.8"
+
+networks:
+  appnet:
+    driver: bridge
+
+services:
+  ckpool:
+    # If your ckpool Dockerfile is in another folder, change context/dockerfile accordingly.
+    # If you already have a built image, replace the build block with: image: your-ckpool-image:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # gives better stack traces:
+    security_opt:
+      - seccomp=unconfined
+    cap_add:
+      - SYS_PTRACE
+    container_name: ckpool-server
+    command: ["/bin/bash", "/entrypoint.sh"]
+    volumes:
+      - ./ckpool.conf:/ckpool/ckpool.conf:ro
+      # Share logs via Windows host path so metrics_api can read them
+      - ckpool-logs:/ckpool/logs
+    ports:
+      - "3335:3335"   # nodeserver
+      - "3336:3336"   # trusted
+      - "3333:3333"   # stratum
+    restart: unless-stopped    # Simple TCP-open healthcheck; no extra packages required
+    healthcheck:
+      test: ["CMD-SHELL", "bash -lc 'echo > /dev/tcp/127.0.0.1/3333'"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks: [appnet]
+
+  metrics_api:
+    # Your uploaded Dockerfile is already a Python API (uvicorn) on port 8000
+    # If you moved it under ./metrics_api, change context: ./metrics_api
+    build:
+      context: ./metrics_api
+      dockerfile: Dockerfile
+    container_name: ckpool_metrics_api
+    environment:
+      CKPOOL_LOG_DIR: /ckpool/logs
+      CKPOOL_STRATUM: ckpool:3333
+    volumes:
+      - ckpool-logs:/data/logs:ro
+    ports:
+      - "8000:8000"  # keep published since your nginx.conf targets 8000
+    restart: unless-stopped
+    depends_on:
+      ckpool:
+        condition: service_started
+    networks: [appnet]
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - metrics_api
+      # If you later add additional apps (ckpool_stats/app2), list them here too
+      # - ckpool_stats
+      # - app2
+    restart: unless-stopped
+    networks: [appnet]
+
+volumes:
+  ckpool-logs:
+

@@ -1,0 +1,65 @@
+
+events {}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+        listen 443 ssl;
+        server_name www.domain.com;
+
+        ssl_certificate      /etc/nginx/ssl/domain_com.crt;
+        ssl_certificate_key  /etc/nginx/ssl/www_domain_com.key;
+
+        # ---- CORS-enabled endpoints ----
+
+    location /metrics/ {
+        # Preflight
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+            add_header 'Access-Control-Max-Age' 86400 always;
+            return 204;
+        }
+
+        proxy_pass http://metrics_api:8000/metrics;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+
+        # Actual responses
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+    }
+
+    location /comed-prices/ {
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+            add_header 'Access-Control-Max-Age' 86400 always;
+            return 204;
+        }
+
+        proxy_pass http://metrics_api:8000/comed-prices;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+    }
+
+    }
+
+    server {
+        listen 80;
+        server_name www.domain.com;
+        return 301 https://$host$request_uri;
+    }
+}
